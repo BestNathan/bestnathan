@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-app-capable" content="yes">
+    <meta name="apple-mobile-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no, email=no"/>
+    <title>Nathan ChatRoom</title>
+    <script src="javascripts/socket.io.min.js"></script>
+    <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
+    <script src="javascripts/jquery.min.js"></script>
+    <style>
+        .navbar-fixed-bottom{
+            height: 50px;
+            background-color: lightgray;
+            opacity: 0.8;
+            padding-top: 8px;
+        }
+        .chatRoom{
+            padding: 10px 40px;
+            /*background-color: #646363;*/
+            overflow: hidden;
+        }
+        .list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus{
+            border:2px
+        }
+        .back{
+            position: fixed;
+            top: 58px;
+            left: 6px;
+        }
+        #loginPart .input-group{
+            margin-bottom: 25px;
+        }
+        #loginPart .buttons{
+            width: 100%;
+        }
+        #loginPart .buttons button{
+            width: 40%;
+            margin-left: 5%;
+            margin-right: 5%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="navbar-text visible-xs pull-right xs-showName">匿名用户&nbsp;</div>
+                <div class="navbar-brand">聊天室</div>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="fullScreen" >全屏显示</a></li>
+                    <li><a >修改昵称</a></li>
+                    <li class="annoymous"><a href="#" class="btn">匿名发言</a></li>
+                    <form class="navbar-form navbar-right">
+                        <div class="input-group">
+                            <input type="text" class="form-control roomId" placeholder="房间名">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default joinRoom">加入房间</button>
+                            </span>
+                        </div>
+                    </form>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="chatRoomPart">
+        <div class="topBlock" style="height: 70px"></div>
+
+        <!--聊天室主要区域-->
+        <div class="container">
+            <div class="roomList col-xs-12 col-sm-3 hidden-xs">
+                <div class="row">
+                    <div class="list-group">
+                        <div class="publicRoom">
+
+                        </div>
+                        <div class="personRoom">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="visible-xs" style="height: 30px"></div>
+            <div class="chatRoom col-xs-12 col-sm-9">
+                <div class="row">
+                    <div class="jumbotron">
+                        <p>&nbsp;</p>
+                        <p>&nbsp;</p>
+                        <p>&nbsp;</p>
+                        <h1>Nathan ChatRoom</h1>
+                        <p>欢迎来到聊天室，在这里你可以畅所欲言。温馨提示：先设置昵称才能开始聊天噢</p>
+                        <!--<p>PS：设置好昵称后，加入房间填写：何静的房间，我不会告你们有惊喜哦</p>-->
+                        <p>&nbsp;</p>
+                        <p>&nbsp;</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="btn btn-primary btn-sm back hidden-lg hidden-sm hidden-md">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> 房间列表
+        </a>
+        <div style="height: 50px"></div>
+        <div class="navbar navbar-fixed-bottom">
+            <div class="container ">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2 infoEdit">
+                    <div class="input-group">
+                        <span class="input-group-addon hidden-xs">昵  称</span>
+                        <input type="text" class="form-control nickname" placeholder="请输入你的昵称">
+                        <span class="input-group-btn">
+                    <button class="btn btn-default submitInfo">提  交</button>
+                </span>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-10 col-sm-offset-1  messageEdit">
+                    <div class="input-group">
+                        <span class="input-group-addon hidden-xs">聊天内容</span>
+                        <input type="text" class="form-control message" placeholder="请输入聊天内容">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default sendMessage">发  送(Enter)</button>
+                        <button class="btn btn-default hidden-xs changeNick">修改昵称</button>
+                        <button class="btn btn-default hidden-xs clear">清空内容</button>
+                    </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="loginPart">
+        <div class="topBlock" style="height: 70px"></div>
+        <div class="container">
+            <header class="well">
+                <h1 class="text-center">开启你的聊天之旅！</h1>
+            </header>
+            <section>
+                <div class="well well-sm col-xs-12 col-sm-offset-2 col-sm-8 tips"></div>
+                <div class=" login">
+                    <form class="col-xs-12 col-sm-offset-2 col-sm-8">
+                        <div class="input-group">
+                            <span class="input-group-addon">用户名</span>
+                            <input class="form-control user" type="text" placeholder="请输入用户名">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">密　码</span>
+                            <input class="form-control password" type="password" placeholder="请输入密码">
+                        </div>
+                        <div class="input-group buttons">
+                            <button id="goto-register" class="btn btn-default">前去注册</button>
+                            <button id="login" class="btn btn-default">登录</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="register">
+                    <form class="col-xs-12 col-sm-offset-2 col-sm-8">
+                        <div class="input-group">
+                            <span class="input-group-addon">用户名</span>
+                            <input class="form-control user" type="text" placeholder="请输入用户名">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">密　码</span>
+                            <input class="form-control password" type="password" placeholder="请输入密码">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">重复密码</span>
+                            <input class="form-control repassword" type="password" placeholder="请再次输入密码">
+                        </div>
+                        <div class="input-group buttons">
+                            <button id="goto-login" class="btn btn-default">前去登录</button>
+                            <button id="register" class="btn btn-default">注册</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </div>
+
+
+</div>
+<script>
+    var mdevice = false
+    if(navigator.userAgent.match(/(iPhone|iPod|Android|ios|SymbianOS)/i))mdevice=true
+    var chatRoomPart = $('#chatRoomPart'),
+        loginPart = $('#loginPart'),
+        loginPage = loginPart.find('.login'),
+        regiserPage = loginPart.find('.register'),
+        tips = loginPart.find('.tips'),
+        gotologinbtn = $('#goto-login'),
+        gotoregisterbtn = $('#goto-register'),
+        loginbtn = $('#login'),
+        registerbtn = $('#register')
+    chatRoomPart.hide()
+    regiserPage.hide()
+    tips.hide()
+    //定义全局变量
+    var nick,
+        userName,
+        infoEle = $('.infoEdit'),
+        messageEle = $('.messageEdit'),
+        chatRoom = $('.chatRoom'),
+        roomList = $('.roomList'),
+        navToggle = $('.navbar-toggle'),
+        navbarCollapse = $('.navbar-collapse'),
+        navbarToggle = false,
+        annoymous = $('.annoymous'),
+        annoymousToggle = false,
+        back = $('.back')
+        topBlock = $('.topBlock'),
+        rooms = {},
+        currentRoom = 'mainPage'
+</script>
+<script src="javascripts/chatRoom/main.js"></script>
+<script src="javascripts/chatRoom/socketEvent.js"></script>
+</body>
+</html>

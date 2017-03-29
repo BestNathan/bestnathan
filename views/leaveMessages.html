@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-app-capable" content="yes">
+    <meta name="apple-mobile-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no, email=no"/>
+    <title>Leave Ur Message</title>
+    <script src="javascripts/vue.js"></script>
+    <script src="javascripts/vue-router.js"></script>
+    <script src="javascripts/jquery.min.js"></script>
+    <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
+    <style>
+        .topProgressBar{
+            position: fixed;
+            opacity: 1;
+            z-index: 9999;
+            height: 3px;
+            background-color: #73ccec;
+        }
+        .modal-mask {
+            position: fixed;
+            z-index: 9998;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .5);
+            display: table;
+            transition: opacity .3s ease;
+        }
+        .modal-title{
+            color: #42b983;
+        }
+        .modal-content{
+            transition: all .3s ease;
+        }
+        .modal-enter, .modal-leave {
+            opacity: 0;
+        }
+
+        .modal-enter .modal-content,
+        .modal-leave .modal-content {
+            -webkit-transform: scale(0.4);
+            transform: scale(0.4);
+        }
+        .loginPart .input-group{
+            margin-bottom: 25px;
+        }
+        .loginPart .buttons{
+            width: 100%;
+        }
+        .loginPart .buttons button{
+            width: 40%;
+            margin-left: 5%;
+            margin-right: 5%;
+        }
+        .goto-create{
+            position: relative;
+            top: -5px;
+        }
+    </style>
+</head>
+<body style="overflow-y: scroll">
+    <div id="app">
+        <progress-bar></progress-bar>
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" @click="toggle">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a v-link="{ path: '/Home' }" class="navbar-brand">留言板</a>
+                </div>
+                <div class="navbar-collapse" :class="navToggle?'':'collapse'">
+                    <ul class="nav navbar-nav">
+                        <li :class="currentPath == '/public' ? 'active': ''"><a v-link="{ path: '/public' }">公共留言板</a></li>
+                        <li :class="currentPath == '/user/'+username ? 'active': ''"><a v-link="{ path: '/user/'+ username}">个人留言板</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li v-if="!isLogin" :class="currentPath == '/Login' ? 'active': ''"><a v-link="{ path: '/Login' }">登录</a></li>
+                        <li v-if="!isLogin" :class="currentPath == '/Register' ? 'active': ''"><a v-link="{ path: '/Register' }">注册</a></li>
+                        <li v-if="isLogin"><a href="#" @click.prevent.stop="quit">退出登录</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- use router-view element as route outlet -->
+        <div style="height: 70px"></div>
+        <div class="container">
+            <router-view></router-view>
+        </div>
+    </div>
+    <!--主页模板-->
+    <template id="homeTemplate">
+        <div class="jumbotron">
+            <p> </p>
+            <p> </p>
+            <p> </p>
+            <p> </p>
+            <p>欢迎来到留言板</p>
+            <p> </p>
+            <p> </p>
+            <p> </p>
+            <p> </p>
+        </div>
+    </template>
+    <!--登录模板-->
+    <template id="loginTemplate">
+        <div class="loginPart">
+            <form class="col-xs-12 col-sm-offset-2 col-sm-8">
+                <div class="input-group">
+                    <span class="input-group-addon">用户名</span>
+                    <input v-model="user" class="form-control user" type="text" placeholder="请输入用户名">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">密　码</span>
+                    <input v-model="pwd" class="form-control password" type="password" placeholder="请输入密码">
+                </div>
+                <div class="input-group buttons">
+                    <button v-link="{ path: '/Register' }" id="goto-register" class="btn btn-default">前去注册</button>
+                    <button @click.prevent.stop="login" id="login" class="btn btn-default">登录</button>
+                </div>
+            </form>
+            <modal></modal>
+        </div>
+    </template>
+    <!--注册模板-->
+    <template id="registerTemplate">
+        <div class="loginPart">
+            <form class="col-xs-12 col-sm-offset-2 col-sm-8">
+                <div class="input-group">
+                    <span class="input-group-addon">用户名</span>
+                    <input v-model="user" class="form-control user" type="text" placeholder="请输入用户名">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">密　码</span>
+                    <input v-model="pwd" class="form-control password" type="password" placeholder="请输入密码">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">重复密码</span>
+                    <input v-model="repwd" class="form-control repassword" type="password" placeholder="请再次输入密码">
+                </div>
+                <div class="input-group buttons">
+                    <button v-link="{ path: '/Login' }" id="goto-login" class="btn btn-default">前去登录</button>
+                    <button @click.prevent.stop="register" id="register" class="btn btn-default">注册</button>
+                </div>
+            </form>
+            <modal></modal>
+        </div>
+    </template>
+    <!--提示框模板-->
+    <template id="modalTemplate">
+        <div class="modal-mask" v-show="show" transition="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button @click="show = false" type="button" class="close" ><span>&times;</span></button>
+                        <h3 class="modal-title">{{title}}</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{content}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="eventBack(eventName)" type="button" class="btn btn-default" >确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <!--公共留言板模板-->
+    <template id="commonTemplate">
+        <div class="col-md-10 col-md-offset-1">
+            <welcome></welcome>
+            <hr/>
+            <message v-for="message in messages" :message="message"></message>
+        </div>
+    </template>
+    <!--个人留言板模板-->
+    <template id="personTemplate">
+        <div class="col-md-10 col-md-offset-1">
+            <welcome></welcome>
+            <hr/>
+            <message v-for="message in messages" :message="message"></message>
+        </div>
+    </template>
+    <!--创建留言模板-->
+    <template id="createMessageTemplate">
+        <div class="loginPart">
+            <form class="col-xs-12 col-sm-offset-2 col-sm-8">
+                <div v-show="!$parent.$parent.$data.username" class="input-group">
+                    <span class="input-group-addon">留言人</span>
+                    <input v-model="from" class="form-control user" type="text" placeholder="请输入你的名称">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">接收人</span>
+                    <input v-model="to" class="form-control user" type="text" placeholder="请输入你想留言的用户名，留空则代表留言到公共区域">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">内　容</span>
+                    <input v-model="content" class="form-control password" type="text" placeholder="请输入留言内容">
+                </div>
+                <div class="input-group buttons">
+                    <button @click.prevent.stop="back" id="back" class="btn btn-default">返回</button>
+                    <button @click.prevent.stop="leaveMessage" id="leaveMessage" class="btn btn-default">留言</button>
+                </div>
+            </form>
+            <modal></modal>
+        </div>
+    </template>
+    <!--留言信息模板-->
+    <template id="message">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span>留言人：{{ message.from }}</span>
+                <!--<button @click="test" type="button" class="close"><span>&times;</span></button>-->
+                <span class="pull-right">{{ time }}</span>
+            </div>
+            <div class="panel-body">
+                {{ message.content }}
+            </div>
+        </div>
+    </template>
+    <!--前往新建留言模板-->
+    <template id="gotoCreateTemplate">
+        <button v-link="{ path: '/createMessage' }" class="pull-right goto-create btn btn-sm btn-primary"><span class="glyphicon glyphicon-plus"></span>新建留言</button>
+    </template>
+    <!--欢迎语模板-->
+    <template id="welcomeTemplate">
+        <div class="well well-sm">{{ welcomeWords }}<goto-create></goto-create></div>
+    </template>
+    <!--进度条模板-->
+    <template id="progressBarTemplate">
+        <div class="topProgressBar" :style="style"></div>
+    </template>
+<script src="javascripts/leaveMessages/main.js"></script>
+</body>
+</html>
