@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var xmlParser = require('express-xml-bodyparser');
 
+var home = require('./routes/home');
 var playerIndex = require('./routes/playerIndex');
 var users = require('./routes/users');
 var lyrics = require('./routes/lyric');
@@ -29,6 +30,7 @@ app.use(xmlParser({ explicitArray : false, ignoreAttrs : true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/', home);
 app.use('/player', playerIndex);
 app.use('/chatRoom', chatRoomIndex);
 app.use('/users', users);

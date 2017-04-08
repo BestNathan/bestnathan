@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nathan</title>
+    <link rel="stylesheet" href="./stylesheets/animate.css">
+    <script src="javascripts/vue.min.js"></script>
+    <script src="javascripts/jquery.min.js"></script>
+    <style>
+        html,body{
+            width: 100%;
+            height: 100%;
+            background-color: #060606;
+            overflow: hidden;
+            color: #666;
+            font-family: "Noto Sans",sans-serif;
+            -webkit-font-smoothing: antialiased;
+            font-weight: normal;
+        }
+        body{
+            background: #fff;
+            color: #222;
+            padding: 0;
+            margin: 0;
+            font-family: "Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif;
+            font-weight: normal;
+            font-style: normal;
+            line-height: 1;
+            position: relative;
+            cursor: default;
+        }
+        #app{
+            width: 100%;
+            height: 100%;
+            -moz-transform: translate3d(0, 0, 0);
+            -ms-transform: translate3d(0, 0, 0);
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+            -moz-transition: -moz-transform 287ms cubic-bezier(0.215, 0.61, 0.355, 1);
+            -o-transition: -o-transform 287ms cubic-bezier(0.215, 0.61, 0.355, 1);
+            -webkit-transition: -webkit-transform 287ms cubic-bezier(0.215, 0.61, 0.355, 1);
+            transition: transform 200ms cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        #app.nav-open{
+            transform: translateX(300px);
+        }
+        .nav-open .navbar-button{
+            height: 26px;
+            width: 26px;
+            background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4yLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iMjUuMTZweCIgaGVpZ2h0PSIyNS4xNTlweCIgdmlld0JveD0iMCAwIDI1LjE2IDI1LjE1OSIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjUuMTYgMjUuMTU5IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxwYXRoIGZpbGw9IiM1RTVGNUYiIGQ9Ik0xNS44MjIsMTIuNThsOS4wNDQtOS4wNDRjMC4zOTItMC4zOTIsMC4zOTItMS4wMjMsMC0xLjQxNWwtMS44MjctMS44MjdjLTAuMzkxLTAuMzkxLTEuMDIzLTAuMzkyLTEuNDE0LDANCglMMTIuNTgsOS4zMzhMMy41MzUsMC4yOTNjLTAuMzkyLTAuMzkxLTEuMDIzLTAuMzkxLTEuNDE1LDBMMC4yOTMsMi4xMmMtMC4zOTIsMC4zOTItMC4zOTEsMS4wMjMsMCwxLjQxNWw5LjA0NSw5LjA0NGwtOS4wNDUsOS4wNDUNCgljLTAuMzkxLDAuMzkyLTAuMzkxLDEuMDIzLDAsMS40MTRsMS44MjcsMS44MjhjMC4zOTEsMC4zOTEsMS4wMjMsMC4zOTEsMS40MTUsMGw5LjA0NS05LjA0NWw5LjA0NCw5LjA0NA0KCWMwLjM5MSwwLjM5MiwxLjAyMiwwLjM5MiwxLjQxNCwwbDEuODI3LTEuODI3YzAuMzkxLTAuMzkxLDAuMzkyLTEuMDIzLDAtMS40MTRMMTUuODIyLDEyLjU4eiIvPg0KPC9zdmc+DQo=");
+        }
+        .navbar-button{
+            padding-top: 35px;
+            margin: auto;
+            height: 28px;
+            width: 33px;
+            background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4yLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iMzIuMTY2cHgiIGhlaWdodD0iMjQuMzM0cHgiIHZpZXdCb3g9IjAgMCAzMi4xNjYgMjQuMzM0IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCAzMi4xNjYgMjQuMzM0IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxwYXRoIGZpbGw9IiM1RTVGNUYiIGQ9Ik0zMi4xNjYsMy41ODRjMCwwLjU1My0wLjQ0NiwxLTEsMUgxYy0wLjU1MywwLTEtMC40NDctMS0xVjFjMC0wLjU1MywwLjQ0Ny0xLDEtMWgzMC4xNjYNCgljMC41NTQsMCwxLDAuNDQ3LDEsMVYzLjU4NHoiLz4NCjxwYXRoIGZpbGw9IiM1RTVGNUYiIGQ9Ik0zMi4xNjYsMTMuMzM0YzAsMC41NTMtMC40NDYsMS0xLDFIMWMtMC41NTMsMC0xLTAuNDQ3LTEtMVYxMC43NWMwLTAuNTUzLDAuNDQ3LTEsMS0xaDMwLjE2Ng0KCWMwLjU1NCwwLDEsMC40NDcsMSwxVjEzLjMzNHoiLz4NCjxwYXRoIGZpbGw9IiM1RTVGNUYiIGQ9Ik0zMi4xNjYsMjMuMzM0YzAsMC41NTMtMC40NDYsMS0xLDFIMWMtMC41NTMsMC0xLTAuNDQ3LTEtMVYyMC43NWMwLTAuNTUzLDAuNDQ3LTEsMS0xaDMwLjE2Ng0KCWMwLjU1NCwwLDEsMC40NDcsMSwxVjIzLjMzNHoiLz4NCjwvc3ZnPg0K');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+        #navbar{
+            position: fixed;
+            height: 100%;
+            width: 100px;
+            top:0;
+            left: 0;
+            /*z-index: 100;*/
+            background-color: black;
+        }
+        .navbar{
+            height: 100%;
+            cursor: pointer;
+        }
+        #nav{
+            position: absolute;
+            height: 100%;
+            width: 300px;
+            left: -300px;
+            background-color: #212121;
+            color: white;
+            transform: translate3d(0, 0, 0);
+        }
+        #nav .nav-wrapper{
+            margin-top: 30%;
+        }
+        #nav .nav-wrapper h2{
+            padding-left: 30px;
+        }
+        #nav ul{
+            height: 100px;
+            width: 100%;
+            list-style: none;
+        }
+        #nav ul li{
+            height: 50px;
+            line-height: 50px;
+            font-size: 22px;
+            width: 100%;
+            text-align: center;
+            background-color: #212121;
+            margin-left: -40px;
+            cursor: pointer;
+        }
+        #nav ul li:hover{
+            background-color: #2a2a2a;
+        }
+        #nav ul li.active{
+            background-color: black;
+            border-bottom: white solid 1px;
+        }
+        .container{
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background-color: #212121;
+            color: white;
+            left: 100px;
+            text-align: center;
+        }
+        .container .wrapper{
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .wrapper .show-page{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top:0;
+            left: 0;
+            /*opacity: 0.5;*/
+            z-index: 99;
+        }
+        .content{
+            position: absolute;
+            background-color:#212121;
+            opacity: 0.8;
+            height: 100%;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
+            line-height: 100%;
+        }
+        h1{
+            font-size: 4em;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" :class="{ 'nav-open' : navOpen }">
+        <div id="navbar" >
+            <div id="nav" class="animated" transition="fade" v-show="navOpen">
+                <div class="nav-wrapper">
+                    <h2>目录：</h2>
+                    <ul>
+                        <li @click="mainClick" :class="{'active':isMain}">主页</li>
+                        <li v-for="item in navItems" @click="navClick(item)" :class="{ 'active' : item.active }">{{ item.name }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="navbar" @click="openNav" >
+                <div class="navbar-button"></div>
+                <div class="navbar-logo"></div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="wrapper">
+                <div class="content animated" transition="fade" v-show="isMain">
+                    <div class="animated fadeInDownBig">
+                        <h1>欢迎来到Nathan的主页</h1>
+                    </div>
+                </div>
+                <iframe class="show-page" src="{{iframeUrl}}" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            var wrapper = $('.wrapper')
+            var content = $('.content')
+            wrapper.width(wrapper.width()-100)
+            content.css('lineHeight',document.body.scrollHeight+'px')
+        })
+        window.onresize = function () {
+            var wrapper = $('.wrapper')
+            var content = $('.content')
+            wrapper.width(document.body.scrollWidth-100)
+            content.css('lineHeight',document.body.scrollHeight+'px')
+        }
+        Vue.transition('bounce', {
+            enterClass: 'bounceInLeft',
+            leaveClass: 'bounceOutRight'
+        })
+        Vue.transition('fade', {
+            enterClass: 'fadeIn',
+            leaveClass: 'fadeOut'
+        })
+        var a = new Vue({
+            el:'#app',
+            data:{
+                navOpen : false,
+                isMain : true,
+                iframeUrl:'',
+                navItems:[
+                    {
+                        url:'/leaveMessage',
+                        name:'留言板(VueJS)',
+                        active:false
+                    },{
+                        url:'/player',
+                        name:'播放器(AngularJS)',
+                        active:false
+                    },{
+                        url:'/chatRoom',
+                        name:'聊天室(jQuery)',
+                        active:false
+                    },{
+                        url:'/drawAndGuess',
+                        name:'你画我猜(jQuery)',
+                        active:false
+                    }
+                ]
+            },
+            methods:{
+                openNav:function () {
+                    this.navOpen = !this.navOpen
+                },
+                navClick:function (item) {
+                    this.isMain = false
+                    for(var i = 0;i<this.navItems.length;i++){
+                        this.navItems[i].active = false
+                    }
+                    this.iframeUrl = item.url
+                    item.active = true
+                    this.openNav()
+                },
+                mainClick:function () {
+                    this.isMain = true
+                    for(var i = 0;i<this.navItems.length;i++){
+                        this.navItems[i].active = false
+                    }
+                    this.openNav()
+                }
+            }
+        })
+    </script>
+</body>
+</html>

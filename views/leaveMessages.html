@@ -103,7 +103,7 @@
             <p> </p>
             <p> </p>
             <p> </p>
-            <p>欢迎来到留言板</p>
+            <p>欢迎来到留言板<a v-link="{ path: '/public' }">点击前往留言板</a></p>
             <p> </p>
             <p> </p>
             <p> </p>
@@ -199,7 +199,7 @@
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon">接收人</span>
-                    <input v-model="to" class="form-control user" type="text" placeholder="请输入你想留言的用户名，留空则代表留言到公共区域">
+                    <input v-model="to" class="form-control user" type="text" placeholder="接收留言的用户名,不填则留言到公共区">
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon">内　容</span>
@@ -232,12 +232,16 @@
     </template>
     <!--欢迎语模板-->
     <template id="welcomeTemplate">
-        <div class="well well-sm">{{ welcomeWords }}<goto-create></goto-create></div>
+        <div class="well well-sm">{{ welcomeWords }}<a v-if="!$parent.$parent.$data.username" v-link="{ path: '/Login' }">登录</a><goto-create></goto-create></div>
     </template>
     <!--进度条模板-->
     <template id="progressBarTemplate">
         <div class="topProgressBar" :style="style"></div>
     </template>
+    <script>
+        var mdevice = false
+        if(navigator.userAgent.match(/(iPhone|iPod|Android|ios|SymbianOS)/i))mdevice=true
+    </script>
 <script src="javascripts/leaveMessages/main.js"></script>
 </body>
 </html>

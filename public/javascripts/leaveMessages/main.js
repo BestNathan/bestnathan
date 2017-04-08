@@ -45,6 +45,7 @@ var progressData = {
     width:0,
 }
 //定义进度条实例方法
+//fhgfhg
 Vue.prototype.$progress = {
     start:function () {
         var self = this
@@ -52,7 +53,7 @@ Vue.prototype.$progress = {
 
         this.timer = setInterval(function () {
             progressData.width = progressData.width + 5
-            if(progressData.width > 89)self.finish()
+            if(progressData.width > 90)self.finish()
         },100)
     },
     finish:function () {
@@ -117,7 +118,11 @@ Vue.component('message',{
     },
     computed:{
         'time': function () {
-            return this.message.createTime?new Date(this.message.createTime * 1000).toLocaleString():''
+             if(!mdevice){
+                 return this.message.createTime?new Date(this.message.createTime * 1000).toLocaleString():''
+             }else{
+                 return this.message.createTime?new Date(this.message.createTime * 1000).toLocaleDateString():''
+             }
         }
     }
 })
@@ -130,7 +135,7 @@ Vue.component('welcome',{
     template:'#welcomeTemplate',
     computed:{
         welcomeWords:function () {
-            return userInfo.username?'欢迎您，'+userInfo.username:'您当前是匿名用户，请登录'
+            return userInfo.username?'欢迎您，'+userInfo.username:'您当前是匿名用户，请'
         }
     }
 })
